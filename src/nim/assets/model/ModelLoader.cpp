@@ -23,57 +23,10 @@ Model ModelLoader::loadModel(const Path& path) {
 
 	Model model = uploadModel(*scene);
 	return model;
-//
-//	for(unsigned int i = 0; i < scene->mNumMeshes; i++) {
-//		Mesh mesh;
-//		aiMesh* aiMesh = scene->mMeshes[i];
-//
-//		for(unsigned int j = 0; j < aiMesh->mNumVertices; j++) {
-//			// Vertices
-//			const aiVector3D& vertex = aiMesh->mVertices[j];
-//			Vector3f v(vertex.x, vertex.y, vertex.z);
-//			mesh.vertices.push_back(v);
-//
-//			// Texture coordinates
-//			//FIXME crash when model has no texCoords
-//			const aiVector3D& texCoord = aiMesh->mTextureCoords[0][j];
-//			Vector2f t(texCoord.x, texCoord.y);
-//			mesh.texCoords.push_back(t);
-//
-//			// Normals
-//			const aiVector3D& normal = aiMesh->mNormals[j];
-//			Vector3f n(normal.x, normal.y, normal.z);
-//			mesh.normals.push_back(n);
-//
-//			// Tangents
-//			const aiVector3D& tangent = aiMesh->mTangents[j];
-//			Vector3f ta(tangent.x, tangent.y, tangent.z);
-//			mesh.tangents.push_back(ta);
-//		}
-//
-//		for(unsigned int j = 0; j < aiMesh->mNumFaces; j++) {
-//			// Faces
-//			const aiFace& face = aiMesh->mFaces[j];
-//			Face f;
-//			f.vi[0] = face.mIndices[0];
-//			f.vi[1] = face.mIndices[1];
-//			f.vi[2] = face.mIndices[2];
-//
-//			mesh.faces.push_back(f);
-//		}
-//		model.meshes.push_back(mesh);
-//	}
-//	uploadModel(model);
-//	std::cout << "Loaded" << std::endl;
-//	return model;
 }
 
 void ModelLoader::uploadModel(Model& model) {
 	for(auto& mesh: model.meshes) {
-		//float* vertexBuffer = new float[mesh.faces.size() * 9];
-		//float* texCoordBuffer = new float[mesh.faces.size() * 6];
-		//float* normalBuffer = new float[mesh.faces.size() * 9];
-		//float* tangentBuffer = new float[mesh.faces.size() * 9];
 		std::vector<float> vertexBuffer;
 		std::vector<float> texCoordBuffer;
 		std::vector<float> normalBuffer;
