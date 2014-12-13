@@ -158,7 +158,7 @@ Model ModelLoader::uploadModel(const aiScene& scene) {
 			glGenBuffers(1, &texCoordVBO);
 			glBindBuffer(GL_ARRAY_BUFFER, texCoordVBO);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * aiMesh->mNumVertices * 2, aiMesh->mTextureCoords[0], GL_STATIC_DRAW);
-			glVertexAttribPointer(1, 3, GL_FLOAT, 0, 0, 0);
+			glVertexAttribPointer(1, 2, GL_FLOAT, 0, 0, 0);
 			glEnableVertexAttribArray(1);
 		}
 
