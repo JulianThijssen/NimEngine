@@ -4,12 +4,14 @@
 
 #include <nim/stb_image.h>
 
+#include <utility>
+
 std::map<Path, Texture> TextureLoader::textureCache = {};
 
 Texture TextureLoader::getTexture(const Path& path) {
-
-	if (textureCache.find(path) != textureCache.end()) {
-		return textureCache.at(path);
+	auto iter = textureCache.find(path);
+	if (iter != textureCache.end()) {
+		return iter->second;
 	}
 
 	int width, height, bytes;
@@ -18,7 +20,7 @@ Texture TextureLoader::getTexture(const Path& path) {
 	Texture texture = uploadTexture(data, width, height, bytes);
 	texture.width = width;
 	texture.height = height;
-	textureCache.insert(std::pair<Path, Texture>(path, texture));
+	textureCache.insert(std::make_pair(path, texture));
 
 	return texture;
 }

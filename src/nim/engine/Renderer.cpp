@@ -22,24 +22,16 @@ void Renderer::create() {
 
 	glClearColor(0, 0, 0.4, 1.0);
 
-	handle = ShaderLoader::loadShaders("res/shaders/diffuse.vert", "res/shaders/diffuse.frag");
+	shader = ShaderLoader::loadShaders("res/shaders/diffuse.vert", "res/shaders/diffuse.frag");
 }
 
 void Renderer::update(Scene& scene) {
 	// Render
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glUseProgram(handle);
+	glUseProgram(shader->handle);
 
 	projectionMatrix = scene.mainCamera.camera->getProjectionMatrix();
-
-	int projLoc = glGetUniformLocation(handle, "projectionMatrix");
-	int viewLoc = glGetUniformLocation(handle, "viewMatrix");
-	int modelLoc = glGetUniformLocation(handle, "modelMatrix");
-
-	glUniformMatrix4fv(projLoc, 1, false, projectionMatrix.toArray());
-	glUniformMatrix4fv(viewLoc, 1, false, viewMatrix.toArray());
-	glUniformMatrix4fv(modelLoc, 1, false, modelMatrix.toArray());
 
 	std::vector<Entity> lights;
 	for(const auto& entity: scene.getEntities()) {
@@ -48,7 +40,7 @@ void Renderer::update(Scene& scene) {
 		}
 	}
 
-	uploadLights(handle, lights);
+	uploadLights(lights);
 
 	for(const auto& entity: scene.getEntities()) {
 		if(entity.transform != nullptr && entity.mesh != nullptr) {
@@ -63,8 +55,8 @@ void Renderer::update(Scene& scene) {
 	}
 }
 
-void Renderer::uploadLights(int shader, std::vector<Entity> lights) {
-	int numLightsLoc = glGetUniformLocation(shader, "numLights");
+void Renderer::uploadLights(std::vector<Entity> lights) {
+	int numLightsLoc = glGetUniformLocation(shader->handle, "numLights");
 	glUniform1i(numLightsLoc, lights.size());
 
 	for(unsigned int i = 0; i < lights.size(); i++) {
@@ -74,11 +66,11 @@ void Renderer::uploadLights(int shader, std::vector<Entity> lights) {
 
 		char attribute[30];
 		snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].position");
-		int lightPos = glGetUniformLocation(shader, attribute);
+		int lightPos = glGetUniformLocation(shader->handle, attribute);
 		snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].color");
-		int lightColor = glGetUniformLocation(shader, attribute);
+		int lightColor = glGetUniformLocation(shader->handle, attribute);
 		snprintf(attribute, sizeof(attribute), "%s%d%s", "lights[", i, "].attenuation");
-		int lightAtt = glGetUniformLocation(shader, attribute);
+		int lightAtt = glGetUniformLocation(shader->handle, attribute);
 
 		glUniform3f(lightPos, transform.position.x, transform.position.y, transform.position.z);
 		glUniform3f(lightColor, light.color.x, light.color.y, light.color.z);
@@ -87,6 +79,10 @@ void Renderer::uploadLights(int shader, std::vector<Entity> lights) {
 }
 
 void Renderer::drawMesh(const Mesh& mesh) {
+	glUniformMatrix4fv(shader->projLoc, 1, false, projectionMatrix.toArray());
+	glUniformMatrix4fv(shader->viewLoc, 1, false, viewMatrix.toArray());
+	glUniformMatrix4fv(shader->modelLoc, 1, false, modelMatrix.toArray());
+
 	glBindVertexArray(mesh.handle);
 	glDrawArrays(GL_TRIANGLES, 0, mesh.numFaces * 3);
 

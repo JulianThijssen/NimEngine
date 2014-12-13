@@ -6,7 +6,7 @@
 #include <fstream>
 #include <streambuf>
 
-int ShaderLoader::loadShaders(std::string vertPath, std::string fragPath) {
+Shader* ShaderLoader::loadShaders(std::string vertPath, std::string fragPath) {
 	int vertexShader = loadShader(vertPath, GL_VERTEX_SHADER);
 	int fragmentShader = loadShader(fragPath, GL_FRAGMENT_SHADER);
 
@@ -33,7 +33,10 @@ int ShaderLoader::loadShaders(std::string vertPath, std::string fragPath) {
 	glValidateProgram(shaderProgram);
 
 	int handle = shaderProgram;
-	return handle;
+
+	Shader shader(handle);
+
+	return &shader;
 }
 
 int ShaderLoader::loadShader(std::string path, int type) {
@@ -54,6 +57,8 @@ int ShaderLoader::loadShader(std::string path, int type) {
 	handle = glCreateShader(type);
 	glShaderSource(handle, 1, &csource, NULL);
 	glCompileShader(handle);
+
+	Shader shader(handle);
 
 	return handle;
 }

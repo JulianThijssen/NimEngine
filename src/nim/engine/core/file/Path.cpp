@@ -7,11 +7,6 @@ Path::Path(std::string spath) {
 }
 
 Path Path::getCurrentFolder() {
-//	int index = spath.find_last_of('/');
-//	if(index != std::string::npos) {
-//		Path folder(spath.substr(0, index + 1));
-//		return folder;
-//	}
 	std::size_t index = spath.rfind('/');
 	if (index != std::string::npos) {
 		return {spath.substr(0, index - 1)};
